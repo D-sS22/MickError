@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MickError</title>
     <style>
-        /* CSS стили */
+        /* Основные стили */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -84,13 +84,44 @@
         button:hover {
             background-color: #0056b3;
         }
+        /* Стили для страницы после входа */
+        #welcomePage {
+            display: none; /* Скрыто по умолчанию */
+            text-align: center;
+        }
+        #welcomeMessage {
+            font-size: 2em;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        #startCreating {
+            margin-top: 40px;
+            font-size: 1.5em;
+            color: #007bff;
+            cursor: pointer;
+        }
+        #footer {
+            font-size: 0.8em;
+            margin-top: 50px;
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 20px;
+        }
+        #support, #info {
+            margin-left: 20px;
+            color: #007bff;
+            cursor: pointer;
+        }
+        #info:hover, #support:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>MickError</h1>
     </header>
-    <div class="container">
+    <div class="container" id="authContainer">
         <h2>Дешевий сайт для покупки готових сайтів</h2>
         <p>Для початку нажмите на кнопку ниже, чтобы перейти к авторизации</p>
 
@@ -110,6 +141,16 @@
         </div>
     </div>
 
+    <!-- Страница после входа -->
+    <div id="welcomePage">
+        <div id="welcomeMessage">Добро пожаловать на наш сайт!</div>
+        <div id="startCreating">Начать создавать</div>
+        <div id="footer">
+            <span id="support">Поддержка</span>
+            <span id="info">Информация</span>
+        </div>
+    </div>
+
     <script>
         // JavaScript для показа формы и обработки данных
 
@@ -125,11 +166,22 @@
             const password = document.getElementById('password').value;
 
             if (nickname && password) {
-                alert(`Добро пожаловать, ${nickname}!`);
-                document.getElementById('authForm').style.display = 'none'; // Скрываем форму после успешного входа
+                // Показ приветственной страницы после входа
+                document.getElementById('authContainer').style.display = 'none';
+                document.getElementById('welcomePage').style.display = 'block';
             } else {
                 alert("Пожалуйста, введите никнейм и пароль.");
             }
+        });
+
+        // Показ сообщения "Информация" при нажатии на ссылку
+        document.getElementById('info').addEventListener('click', function() {
+            alert("Этот сайт разработан четырнадцатилетним школьником. Я пока что не умею создавать хорошие сайты, но буду учиться и с каждого этапа моего развития буду делать всё лучше работы и повышать цену на сайты. Если есть какие-то вопросы, заходите в Поддержку для получения информации о покупках и правилах.");
+        });
+
+        // Пустой обработчик для "Поддержка" (можно добавить логику позже)
+        document.getElementById('support').addEventListener('click', function() {
+            // Пока что ничего не происходит
         });
     </script>
 </body>

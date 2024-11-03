@@ -22,10 +22,6 @@
         h1 {
             margin: 0;
         }
-        p {
-            text-align: center;
-            font-size: 1.2em;
-        }
         .container {
             max-width: 800px;
             margin: 20px auto;
@@ -36,20 +32,21 @@
             text-align: center;
         }
         /* Кнопка "Перейти" */
-        #goToAuth {
+        #goToAuth, #startCreating {
             display: inline-block;
             margin: 20px 0;
             padding: 10px 15px;
             color: #fff;
             background: #007bff;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 50px;
             text-align: center;
             font-size: 16px;
             border: none;
             cursor: pointer;
+            width: 200px;
         }
-        #goToAuth:hover {
+        #goToAuth:hover, #startCreating:hover {
             background: #0056b3;
         }
         /* Стили для формы авторизации */
@@ -93,12 +90,6 @@
             font-size: 2em;
             font-weight: bold;
             margin-top: 20px;
-        }
-        #startCreating {
-            margin-top: 40px;
-            font-size: 1.5em;
-            color: #007bff;
-            cursor: pointer;
         }
         #footer {
             font-size: 0.8em;
@@ -144,7 +135,8 @@
     <!-- Страница после входа -->
     <div id="welcomePage">
         <div id="welcomeMessage">Добро пожаловать на наш сайт!</div>
-        <div id="startCreating">Начать создавать</div>
+        <!-- Кнопка "Начать создавать" -->
+        <button id="startCreating" onclick="location.href='create.html'">Начать создавать</button>
         <div id="footer">
             <span id="support">Поддержка</span>
             <span id="info">Информация</span>
@@ -152,8 +144,6 @@
     </div>
 
     <script>
-        // JavaScript для показа формы и обработки данных
-
         // Показ формы при нажатии на кнопку "Перейти"
         document.getElementById('goToAuth').addEventListener('click', function() {
             const authForm = document.getElementById('authForm');

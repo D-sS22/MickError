@@ -22,6 +22,10 @@
         h1 {
             margin: 0;
         }
+        p {
+            text-align: center;
+            font-size: 1.2em;
+        }
         .container {
             max-width: 800px;
             margin: 20px auto;
@@ -32,21 +36,20 @@
             text-align: center;
         }
         /* Кнопка "Перейти" */
-        #goToAuth, #startCreating {
+        #goToAuth {
             display: inline-block;
             margin: 20px 0;
             padding: 10px 15px;
             color: #fff;
             background: #007bff;
             text-decoration: none;
-            border-radius: 50px;
+            border-radius: 5px;
             text-align: center;
             font-size: 16px;
             border: none;
             cursor: pointer;
-            width: 200px;
         }
-        #goToAuth:hover, #startCreating:hover {
+        #goToAuth:hover {
             background: #0056b3;
         }
         /* Стили для формы авторизации */
@@ -91,20 +94,44 @@
             font-weight: bold;
             margin-top: 20px;
         }
-        #footer {
-            font-size: 0.8em;
-            margin-top: 50px;
-            display: flex;
-            justify-content: flex-end;
-            padding-right: 20px;
-        }
-        #support, #info {
-            margin-left: 20px;
-            color: #007bff;
+        #startCreating {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 10px 15px;
+            color: #fff;
+            background: #007bff;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 1.2em;
             cursor: pointer;
         }
-        #info:hover, #support:hover {
-            text-decoration: underline;
+        /* Стили для страницы выбора сайта */
+        #selectionPage {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .option {
+            display: inline-block;
+            width: 200px;
+            height: 200px;
+            margin: 20px;
+            text-align: center;
+            font-size: 1em;
+            background-color: #f4f4f4;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .option img {
+            width: 100%;
+            height: 140px;
+            border-radius: 8px 8px 0 0;
+        }
+        .optionText {
+            padding: 10px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -135,28 +162,48 @@
     <!-- Страница после входа -->
     <div id="welcomePage">
         <div id="welcomeMessage">Добро пожаловать на наш сайт!</div>
-        <!-- Кнопка "Начать создавать" -->
-        <button id="startCreating" onclick="location.href='create.html'">Начать создавать</button>
-        <div id="footer">
-            <span id="support">Поддержка</span>
-            <span id="info">Информация</span>
+        <button id="startCreating">Начать создавать</button>
+    </div>
+
+    <!-- Страница выбора сайта -->
+    <div id="selectionPage">
+        <h2>Выберите тип сайта</h2>
+        
+        <!-- Кнопки с изображениями и описанием -->
+        <div class="option" onclick="alert('Вы выбрали Простой сайт')">
+            <img src="simple_site.jpg" alt="Простой сайт">
+            <div class="optionText">Простой сайт (19 грн)</div>
+        </div>
+        
+        <div class="option" onclick="alert('Вы выбрали Середний сайт')">
+            <img src="medium_site.jpg" alt="Середний сайт">
+            <div class="optionText">Середний сайт (59 грн)</div>
+        </div>
+        
+        <div class="option" onclick="alert('Вы выбрали Качественный сайт')">
+            <img src="quality_site.jpg" alt="Качественный сайт">
+            <div class="optionText">Качественный сайт (139 грн)</div>
+        </div>
+        
+        <div class="option" onclick="alert('Вы выбрали Бизнес сайт')">
+            <img src="business_site.jpg" alt="Бизнес сайт">
+            <div class="optionText">Бизнес сайт (499 грн)</div>
         </div>
     </div>
 
     <script>
-        // Показ формы при нажатии на кнопку "Перейти"
+        // Показ формы авторизации
         document.getElementById('goToAuth').addEventListener('click', function() {
             const authForm = document.getElementById('authForm');
             authForm.style.display = authForm.style.display === 'none' ? 'block' : 'none';
         });
 
-        // Обработка нажатия кнопки "Войти"
+        // Обработка входа и показ приветственной страницы
         document.getElementById('loginButton').addEventListener('click', function() {
             const nickname = document.getElementById('nickname').value;
             const password = document.getElementById('password').value;
 
             if (nickname && password) {
-                // Показ приветственной страницы после входа
                 document.getElementById('authContainer').style.display = 'none';
                 document.getElementById('welcomePage').style.display = 'block';
             } else {
@@ -164,14 +211,10 @@
             }
         });
 
-        // Показ сообщения "Информация" при нажатии на ссылку
-        document.getElementById('info').addEventListener('click', function() {
-            alert("Этот сайт разработан четырнадцатилетним школьником. Я пока что не умею создавать хорошие сайты, но буду учиться и с каждого этапа моего развития буду делать всё лучше работы и повышать цену на сайты. Если есть какие-то вопросы, заходите в Поддержку для получения информации о покупках и правилах.");
-        });
-
-        // Пустой обработчик для "Поддержка" (можно добавить логику позже)
-        document.getElementById('support').addEventListener('click', function() {
-            // Пока что ничего не происходит
+        // Показ страницы выбора сайта
+        document.getElementById('startCreating').addEventListener('click', function() {
+            document.getElementById('welcomePage').style.display = 'none';
+            document.getElementById('selectionPage').style.display = 'block';
         });
     </script>
 </body>

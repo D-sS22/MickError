@@ -19,6 +19,7 @@
             padding: 20px;
             text-align: center;
             color: white;
+            position: relative;
         }
 
         /* Стиль для главной страницы */
@@ -102,12 +103,60 @@
         .exchange-btn:hover {
             background-color: #e68900;
         }
+
+        /* Стиль кнопки Промокоды */
+        .promo-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #FFA500;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .promo-btn:hover {
+            background-color: #e68900;
+        }
+
+        /* Окно ввода промокодов */
+        .promo-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: white;
+            border: 2px solid orange;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .promo-popup input {
+            padding: 5px;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        .promo-popup button {
+            padding: 10px 20px;
+            background-color: orange;
+            border: none;
+            cursor: pointer;
+        }
+
+        .promo-popup button:hover {
+            background-color: darkorange;
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>Добро пожаловать, <span id="user-nickname"></span>!</h1>
+        <button class="promo-btn" onclick="openPromoPopup()">Промокоды</button>
     </div>
 
     <div class="main-content">
@@ -146,11 +195,19 @@
         <button onclick="closeExchangePopup()">Закрыть</button>
     </div>
 
+    <!-- Окно ввода промокодов -->
+    <div class="promo-popup" id="promo-popup">
+        <h2>Введите промокод</h2>
+        <input type="text" id="promo-code" placeholder="Промокод">
+        <button onclick="applyPromoCode()">Применить</button>
+        <button onclick="closePromoPopup()">Закрыть</button>
+    </div>
+
     <script>
         // Получаем данные пользователя из localStorage
         const nickname = localStorage.getItem('nickname');
         const userId = localStorage.getItem('userId');
-        let coins = parseInt(localStorage.getItem('coins'), 10);
+        let coins = parseInt(localStorage.getItem('coins'), 10) || 1000;
         let dollars = parseInt(localStorage.getItem('dollars'), 10) || 0;
         let euros = parseInt(localStorage.getItem('euros'), 10) || 0;
 
@@ -193,51 +250,97 @@
             } else if (fromCurrency === 'EUR' && toCurrency === 'UAH') {
                 exchangeRate = 45; // 1 евро = 45 гривен
             } else if (fromCurrency === 'USD' && toCurrency === 'EUR') {
-                exchangeRate = 45 / 40; // 1 доллар = 1.125 евро
+                exchangeRate = 45 / 40; // 1 доллар = 45 / 40 евро
             } else if (fromCurrency === 'EUR' && toCurrency === 'USD') {
-                exchangeRate = 40 / 45; // 1 евро = 0.888 доллар
+                exchangeRate = 40 / 45; // 1 евро = 40 / 45 доллара
             }
 
-            if (fromCurrency === 'UAH' && coins >= amount) {
+            // Выполняем обмен
+            if (fromCurrency === 'UAH') {
+                if (coins < amount) {
+                    alert('Недостаточно гривен!');
+                    return;
+                }
                 coins -= amount;
-                if (toCurrency === 'USD') {
-                    dollars += amount * exchangeRate;
-                } else if (toCurrency === 'EUR') {
-                    euros += amount * exchangeRate;
+            } else if (fromCurrency === 'USD') {
+                if (dollars < amount) {
+                    alert('Недостаточно долларов!');
+                    return;
                 }
-            } else if (fromCurrency === 'USD' && dollars >= amount) {
                 dollars -= amount;
-                if (toCurrency === 'UAH') {
-                    coins += amount * exchangeRate;
-                } else if (toCurrency === 'EUR') {
-                    euros += amount * exchangeRate;
+            } else if (fromCurrency === 'EUR') {
+                if (euros < amount) {
+                    alert('Недостаточно евро!');
+                    return;
                 }
-            } else if (fromCurrency === 'EUR' && euros >= amount) {
                 euros -= amount;
-                if (toCurrency === 'UAH') {
-                    coins += amount * exchangeRate;
-                } else if (toCurrency === 'USD') {
-                    dollars += amount * exchangeRate;
-                }
-            } else {
-                alert('Недостаточно средств для обмена!');
-                return;
             }
 
-            // Обновляем данные в localStorage
+            // Переводим валюту
+            if (toCurrency === 'UAH') {
+                coins += amount * exchangeRate;
+            } else if (toCurrency === 'USD') {
+                dollars += amount * exchangeRate;
+            } else if (toCurrency === 'EUR') {
+                euros += amount * exchangeRate;
+            }
+
+            // Сохраняем обновленные данные в localStorage
             localStorage.setItem('coins', coins);
             localStorage.setItem('dollars', dollars);
             localStorage.setItem('euros', euros);
 
-            // Обновляем отображаемые значения
-            document.getElementById('user-coins').textContent = coins;
+            // Обновляем отображение
+            document.getElementById('user-coins').textContent = coins.toFixed(2);
             document.getElementById('user-dollars').textContent = dollars.toFixed(2);
             document.getElementById('user-euros').textContent = euros.toFixed(2);
 
-            // Закрываем окно обмена
             closeExchangePopup();
+        }
+
+        // Функция для открытия окна ввода промокода
+        function openPromoPopup() {
+            document.getElementById('promo-popup').style.display = 'block';
+        }
+
+        // Функция для закрытия окна промокодов
+        function closePromoPopup() {
+            document.getElementById('promo-popup').style.display = 'none';
+        }
+
+        // Функция для применения промокода
+        function applyPromoCode() {
+            const promoCode = document.getElementById('promo-code').value.trim();
+
+            if (promoCode === 'VladTop') {
+                dollars += 100; // Промокод на 100 долларов
+                alert('Вы получили 100 долларов!');
+            } else if (promoCode === 'MikaError') {
+                coins += 1000; // Промокод на 1000 грн
+                alert('Вы получили 1000 грн!');
+            } else if (promoCode === 'Bonus') {
+                coins *= 1.5;
+                dollars *= 1.5;
+                euros *= 1.5;
+                alert('Вся сумма была умножена на 1.5!');
+            } else {
+                alert('Неверный промокод');
+            }
+
+            // Сохраняем обновленные данные в localStorage
+            localStorage.setItem('coins', coins);
+            localStorage.setItem('dollars', dollars);
+            localStorage.setItem('euros', euros);
+
+            // Обновляем отображение
+            document.getElementById('user-coins').textContent = coins.toFixed(2);
+            document.getElementById('user-dollars').textContent = dollars.toFixed(2);
+            document.getElementById('user-euros').textContent = euros.toFixed(2);
+
+            closePromoPopup();
         }
     </script>
 
 </body>
 </html>
+

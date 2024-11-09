@@ -9,6 +9,7 @@
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 20px;
+            background-color: #f7f7f7;
         }
         .game-buttons {
             margin-bottom: 20px;
@@ -18,6 +19,13 @@
             margin: 10px;
             font-size: 18px;
             cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .game-button:hover {
+            background-color: #45a049;
         }
         #game-container {
             display: none;
@@ -82,27 +90,35 @@
     </div>
 
     <div id="game-container">
+        <!-- Игра Слоты -->
         <div id="slots-game" style="display: none;">
             <div class="slot-machine">
                 <div class="slot" id="slot1"></div>
                 <div class="slot" id="slot2"></div>
                 <div class="slot" id="slot3"></div>
             </div>
-            <button onclick="spinSlots()">Крутить Слоты</button>
+            <button class="game-button" onclick="spinSlots()">Крутить Слоты</button>
         </div>
 
+        <!-- Игра Плинко -->
         <div id="plinko-game" style="display: none;">
             <div id="plinko-board">
                 <div></div><div></div><div></div><div></div><div></div>
             </div>
             <div id="plinko-ball"></div>
-            <button onclick="startPlinko()">Запустить мячик</button>
+            <button class="game-button" onclick="startPlinko()">Запустить мячик</button>
         </div>
 
+        <!-- Игра Шар -->
         <div id="bubble-game" style="display: none;">
             <div id="bubble">Шар надувается...</div>
             <div id="multiplier">Множитель: <span id="multiplier-value">1</span></div>
-            <button onclick="startBubble()">Начать</button>
+            <button class="game-button" onclick="startBubble()">Начать</button>
+        </div>
+
+        <!-- Игра Шахматы с игроками (пока пусто) -->
+        <div id="chess-game" style="display: none;">
+            <p>Шахматы с игроками (будет добавлено позже)</p>
         </div>
     </div>
 
@@ -113,6 +129,7 @@
             document.getElementById('slots-game').style.display = 'none';
             document.getElementById('plinko-game').style.display = 'none';
             document.getElementById('bubble-game').style.display = 'none';
+            document.getElementById('chess-game').style.display = 'none';
 
             // Показываем выбранную игру
             if (game === 'slots') {
@@ -121,6 +138,8 @@
                 document.getElementById('plinko-game').style.display = 'block';
             } else if (game === 'bubble') {
                 document.getElementById('bubble-game').style.display = 'block';
+            } else if (game === 'chess') {
+                document.getElementById('chess-game').style.display = 'block';
             }
         }
 
@@ -177,6 +196,5 @@
             }
         }
     </script>
-
 </body>
 </html>

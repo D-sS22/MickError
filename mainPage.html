@@ -57,6 +57,51 @@
         .actions button:hover {
             background-color: #45a049;
         }
+
+        /* Стиль окна обмена валют */
+        .exchange-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: white;
+            border: 2px solid orange;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .exchange-popup input {
+            padding: 5px;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        .exchange-popup button {
+            padding: 10px 20px;
+            background-color: orange;
+            border: none;
+            cursor: pointer;
+        }
+
+        .exchange-popup button:hover {
+            background-color: darkorange;
+        }
+
+        /* Стиль для кнопки обмена */
+        .exchange-btn {
+            padding: 10px;
+            background-color: #FFA500;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .exchange-btn:hover {
+            background-color: #e68900;
+        }
     </style>
 </head>
 <body>
@@ -72,13 +117,33 @@
         </div>
         
         <div class="coins">
-            <p>Ваши монеты: ₴ <span id="user-coins"></span></p>
+            <p>Гривни: ₴ <span id="user-coins"></span></p>
+            <p>Доллары: $ <span id="user-dollars"></span></p>
+            <p>Евро: € <span id="user-euros"></span></p>
         </div>
 
-        <div class="actions">
-            <button onclick="addMoney()">Поднять деньги</button>
-            <button onclick="withdrawMoney()">Потратить монеты</button>
-        </div>
+        <button class="exchange-btn" onclick="openExchangePopup()">Обмен валют</button>
+    </div>
+
+    <!-- Окно обмена валют -->
+    <div class="exchange-popup" id="exchange-popup">
+        <h2>Обмен валюты</h2>
+        <label for="currency-from">Изменить:</label>
+        <select id="currency-from">
+            <option value="UAH">Гривни</option>
+            <option value="USD">Доллары</option>
+            <option value="EUR">Евро</option>
+        </select>
+        <input type="number" id="amount-from" placeholder="Количество" min="1">
+        <br>
+        <label for="currency-to">На:</label>
+        <select id="currency-to">
+            <option value="USD">Доллары</option>
+            <option value="EUR">Евро</option>
+            <option value="UAH">Гривни</option>
+        </select>
+        <button onclick="exchangeCurrency()">Обменять</button>
+        <button onclick="closeExchangePopup()">Закрыть</button>
     </div>
 
     <script>
@@ -86,28 +151,91 @@
         const nickname = localStorage.getItem('nickname');
         const userId = localStorage.getItem('userId');
         let coins = parseInt(localStorage.getItem('coins'), 10);
+        let dollars = parseInt(localStorage.getItem('dollars'), 10) || 0;
+        let euros = parseInt(localStorage.getItem('euros'), 10) || 0;
 
         // Отображаем ник, айди и количество монет
         document.getElementById('nickname').textContent = nickname;
         document.getElementById('user-id').textContent = userId;
         document.getElementById('user-nickname').textContent = nickname;
         document.getElementById('user-coins').textContent = coins;
+        document.getElementById('user-dollars').textContent = dollars;
+        document.getElementById('user-euros').textContent = euros;
 
-        // Функции для изменения монет
-        function addMoney() {
-            coins += 100; // Пример увеличения на 100 монет
-            localStorage.setItem('coins', coins);
-            document.getElementById('user-coins').textContent = coins;
+        // Функция для открытия окна обмена
+        function openExchangePopup() {
+            document.getElementById('exchange-popup').style.display = 'block';
         }
 
-        function withdrawMoney() {
-            if (coins >= 50) {
-                coins -= 50; // Пример уменьшения на 50 монет
-                localStorage.setItem('coins', coins);
-                document.getElementById('user-coins').textContent = coins;
-            } else {
-                alert('У вас недостаточно монет!');
+        // Функция для закрытия окна обмена
+        function closeExchangePopup() {
+            document.getElementById('exchange-popup').style.display = 'none';
+        }
+
+        // Функция для обмена валют
+        function exchangeCurrency() {
+            const fromCurrency = document.getElementById('currency-from').value;
+            const toCurrency = document.getElementById('currency-to').value;
+            const amount = parseFloat(document.getElementById('amount-from').value);
+
+            if (isNaN(amount) || amount <= 0) {
+                alert('Введите корректную сумму для обмена!');
+                return;
             }
+
+            let exchangeRate;
+            if (fromCurrency === 'UAH' && toCurrency === 'USD') {
+                exchangeRate = 1 / 40; // 1 доллар = 40 гривен
+            } else if (fromCurrency === 'UAH' && toCurrency === 'EUR') {
+                exchangeRate = 1 / 45; // 1 евро = 45 гривен
+            } else if (fromCurrency === 'USD' && toCurrency === 'UAH') {
+                exchangeRate = 40; // 1 доллар = 40 гривен
+            } else if (fromCurrency === 'EUR' && toCurrency === 'UAH') {
+                exchangeRate = 45; // 1 евро = 45 гривен
+            } else if (fromCurrency === 'USD' && toCurrency === 'EUR') {
+                exchangeRate = 45 / 40; // 1 доллар = 1.125 евро
+            } else if (fromCurrency === 'EUR' && toCurrency === 'USD') {
+                exchangeRate = 40 / 45; // 1 евро = 0.888 доллар
+            }
+
+            if (fromCurrency === 'UAH' && coins >= amount) {
+                coins -= amount;
+                if (toCurrency === 'USD') {
+                    dollars += amount * exchangeRate;
+                } else if (toCurrency === 'EUR') {
+                    euros += amount * exchangeRate;
+                }
+            } else if (fromCurrency === 'USD' && dollars >= amount) {
+                dollars -= amount;
+                if (toCurrency === 'UAH') {
+                    coins += amount * exchangeRate;
+                } else if (toCurrency === 'EUR') {
+                    euros += amount * exchangeRate;
+                }
+            } else if (fromCurrency === 'EUR' && euros >= amount) {
+                euros -= amount;
+                if (toCurrency === 'UAH') {
+                    coins += amount * exchangeRate;
+                } else if (toCurrency === 'USD') {
+                    dollars += amount * exchangeRate;
+                }
+            } else {
+                alert('Недостаточно средств для обмена!');
+                return;
+            }
+
+            // Обновляем данные в localStorage
+            localStorage.setItem('coins', coins);
+            localStorage.setItem('dollars', dollars);
+            localStorage.setItem('euros', euros);
+
+            // Обновляем отображаемые значения
+            document.getElementById('user-coins').textContent = coins;
+            document.getElementById('user-dollars').textContent = dollars.toFixed(2);
+            document.getElementById('user-euros').textContent = euros.toFixed(2);
+
+            // Закрываем окно обмена
+            closeExchangePopup();
         }
     </script>
 

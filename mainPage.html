@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница</title>
+    <style>
+        /* Основной стиль для страницы */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+        }
+
+        /* Оранжевая смужка сверху */
+        .header {
+            background-color: orange;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        /* Стиль для главной страницы */
+        .main-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .user-info {
+            margin-bottom: 30px;
+        }
+
+        .user-info p {
+            font-size: 18px;
+            margin: 5px 0;
+        }
+
+        .coins {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .actions {
+            margin-top: 20px;
+        }
+
+        .actions button {
+            margin: 5px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .actions button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Добро пожаловать, <span id="user-nickname"></span>!</h1>
+    </div>
+
+    <div class="main-content">
+        <div class="user-info">
+            <p>Ник: <span id="nickname"></span></p>
+            <p>Айди: <span id="user-id"></span></p>
+        </div>
+        
+        <div class="coins">
+            <p>Ваши монеты: ₴ <span id="user-coins"></span></p>
+        </div>
+
+        <div class="actions">
+            <button onclick="addMoney()">Поднять деньги</button>
+            <button onclick="withdrawMoney()">Потратить монеты</button>
+        </div>
+    </div>
+
+    <script>
+        // Получаем данные пользователя из localStorage
+        const nickname = localStorage.getItem('nickname');
+        const userId = localStorage.getItem('userId');
+        let coins = parseInt(localStorage.getItem('coins'), 10);
+
+        // Отображаем ник, айди и количество монет
+        document.getElementById('nickname').textContent = nickname;
+        document.getElementById('user-id').textContent = userId;
+        document.getElementById('user-nickname').textContent = nickname;
+        document.getElementById('user-coins').textContent = coins;
+
+        // Функции для изменения монет
+        function addMoney() {
+            coins += 100; // Пример увеличения на 100 монет
+            localStorage.setItem('coins', coins);
+            document.getElementById('user-coins').textContent = coins;
+        }
+
+        function withdrawMoney() {
+            if (coins >= 50) {
+                coins -= 50; // Пример уменьшения на 50 монет
+                localStorage.setItem('coins', coins);
+                document.getElementById('user-coins').textContent = coins;
+            } else {
+                alert('У вас недостаточно монет!');
+            }
+        }
+    </script>
+
+</body>
+</html>

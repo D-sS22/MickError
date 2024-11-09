@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Казино</title>
+    <style>
+        /* Основной стиль для страницы */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+        }
+
+        /* Оранжевая смужка сверху */
+        .header {
+            background-color: orange;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        /* Контент на странице */
+        .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: orange;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: darkorange;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Добро пожаловать в шуточное казино!</h1>
+    </div>
+    <div class="content">
+        <h2>Введите ваш ник:</h2>
+        <input type="text" id="nickname" placeholder="Ваш ник">
+        <button onclick="enterCasino()">Перейти</button>
+    </div>
+
+    <script>
+        // Проверяем, был ли введен ник ранее и сохранен в localStorage
+        if (localStorage.getItem('nickname')) {
+            window.location.href = 'mainPage.html'; // Перенаправление на другую страницу, если ник был сохранен
+        }
+
+        // Функция для перехода на другую страницу
+        function enterCasino() {
+            const nickname = document.getElementById('nickname').value.trim();
+            
+            if (nickname) {
+                // Сохраняем ник в localStorage
+                localStorage.setItem('nickname', nickname);
+                
+                // Перенаправляем на другую страницу (например, mainPage.html)
+                window.location.href = 'mainPage.html';
+            } else {
+                alert('Пожалуйста, введите ваш ник!');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucky Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f7f7f7;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #ff9800;
+            padding: 10px;
+            color: white;
+        }
+
+        .game-buttons {
+            margin-top: 30px;
+        }
+
+        .game-button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .game-button:hover {
+            background-color: #45a049;
+        }
+
+        .content {
+            margin-top: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .monetary {
+            margin-bottom: 10px;
+        }
+
+        .nickname, .user-info {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .monetary span {
+            font-weight: bold;
+        }
+
+        #currency-exchange-modal {
+            display: none;
+            background-color: rgba(0,0,0,0.7);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .modal-content input {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Lucky Game</h1>
+    </div>
+
+    <div class="content">
+        <!-- Отображение информации о пользователе -->
+        <div class="nickname">
+            <p>Ник: <span id="nickname-display">Игрок</span></p>
+            <p>Айди: <span id="user-id">18536923</span></p>
+        </div>
+
+        <!-- Отображение монет -->
+        <div class="monetary">
+            <p>₴ Гривни: <span id="uah-amount">1000</span></p>
+            <p>$ Доллары: <span id="usd-amount">0</span></p>
+            <p>€ Евро: <span id="eur-amount">0</span></p>
+        </div>
+
+        <button class="game-button" onclick="showCurrencyExchange()">Обмен валют</button>
+
+        <!-- Кнопки для игр -->
+        <div class="game-buttons">
+            <button class="game-button" onclick="startGame('slots')">Слоты</button>
+            <button class="game-button" onclick="startGame('plinko')">Плинко</button>
+            <button class="game-button" onclick="startGame('bubble')">Шар</button>
+            <button class="game-button" onclick="startGame('chess')">Шахматы с игроками</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно обмена валют -->
+    <div id="currency-exchange-modal">
+        <div class="modal-content">
+            <h3>Обмен валют</h3>
+            <p>Гривны: <input type="number" id="exchange-uah" value="0"></p>
+            <p>Доллары: <input type="number" id="exchange-usd" value="0"></p>
+            <p>Евро: <input type="number" id="exchange-eur" value="0"></p>
+            <button onclick="exchangeCurrency()">Обменять</button>
+            <button onclick="closeCurrencyExchange()">Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        let uahAmount = 1000;
+        let usdAmount = 0;
+        let eurAmount = 0;
+
+        // Функция для отображения информации о пользователе
+        const nicknameDisplay = document.getElementById("nickname-display");
+        const userIdDisplay = document.getElementById("user-id");
+        const uahAmountDisplay = document.getElementById("uah-amount");
+        const usdAmountDisplay = document.getElementById("usd-amount");
+        const eurAmountDisplay = document.getElementById("eur-amount");
+
+        function updateDisplay() {
+            uahAmountDisplay.textContent = uahAmount;
+            usdAmountDisplay.textContent = usdAmount.toFixed(2);
+            eurAmountDisplay.textContent = eurAmount.toFixed(2);
+        }
+
+        // Функция для начала игры
+        function startGame(game) {
+            alert("Начинаем игру: " + game);
+            // Логика для начала игры
+        }
+
+        // Показываем окно обмена валют
+        function showCurrencyExchange() {
+            document.getElementById("currency-exchange-modal").style.display = "flex";
+        }
+
+        // Закрываем окно обмена валют
+        function closeCurrencyExchange() {
+            document.getElementById("currency-exchange-modal").style.display = "none";
+        }
+
+        // Обмен валют
+        function exchangeCurrency() {
+            const uahToUsd = 1 / 40;
+            const uahToEur = 1 / 45;
+
+            let uah = parseFloat(document.getElementById("exchange-uah").value) || 0;
+            let usd = parseFloat(document.getElementById("exchange-usd").value) || 0;
+            let eur = parseFloat(document.getElementById("exchange-eur").value) || 0;
+
+            if (uah > 0) {
+                usdAmount += uah * uahToUsd;
+                eurAmount += uah * uahToEur;
+                uahAmount -= uah;
+            }
+
+            if (usd > 0) {
+                uahAmount += usd * 40;
+                usdAmount -= usd;
+            }
+
+            if (eur > 0) {
+                uahAmount += eur * 45;
+                eurAmount -= eur;
+            }
+
+            updateDisplay();
+            closeCurrencyExchange();
+        }
+    </script>
+</body>
+</html>

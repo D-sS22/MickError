@@ -47,9 +47,48 @@
         button:hover {
             background-color: darkorange;
         }
+
+        /* Стиль для главной страницы */
+        .main-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .user-info {
+            margin-bottom: 30px;
+        }
+
+        .user-info p {
+            font-size: 18px;
+            margin: 5px 0;
+        }
+
+        .coins {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .actions {
+            margin-top: 20px;
+        }
+
+        .actions button {
+            margin: 5px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .actions button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Главная страница -->
     <div class="header">
         <h1>Добро пожаловать в шуточное казино!</h1>
     </div>
@@ -62,10 +101,10 @@
     <script>
         // Проверяем, был ли введен ник ранее и сохранен в localStorage
         if (localStorage.getItem('nickname')) {
-            window.location.href = 'mainPage.html'; // Перенаправление на другую страницу, если ник был сохранен
+            window.location.href = 'mainPage.html'; // Перенаправление на страницу главной после сохранения ника
         }
 
-        // Функция для перехода на другую страницу
+        // Функция для перехода на главную страницу после ввода ника
         function enterCasino() {
             const nickname = document.getElementById('nickname').value.trim();
             
@@ -73,12 +112,22 @@
                 // Сохраняем ник в localStorage
                 localStorage.setItem('nickname', nickname);
                 
-                // Перенаправляем на другую страницу (например, mainPage.html)
+                // Генерация уникального ID для пользователя
+                const userId = Math.floor(Math.random() * 90000000) + 10000000; // Генерация ID из 8 случайных цифр
+                
+                // Сохранение уникального ID в localStorage
+                localStorage.setItem('userId', userId);
+                
+                // Сохранение стартового количества монет
+                localStorage.setItem('coins', 1000);
+                
+                // Перенаправляем на главную страницу
                 window.location.href = 'mainPage.html';
             } else {
                 alert('Пожалуйста, введите ваш ник!');
             }
         }
     </script>
+
 </body>
 </html>

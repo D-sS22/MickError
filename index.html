@@ -3,131 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Казино</title>
-    <style>
-        /* Основной стиль для страницы */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: white;
-        }
-
-        /* Оранжевая смужка сверху */
-        .header {
-            background-color: orange;
-            padding: 20px;
-            text-align: center;
-            color: white;
-        }
-
-        /* Контент на странице */
-        .content {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 80vh;
-        }
-
-        input {
-            padding: 10px;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: orange;
-            border: none;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: darkorange;
-        }
-
-        /* Стиль для главной страницы */
-        .main-content {
-            padding: 20px;
-            text-align: center;
-        }
-
-        .user-info {
-            margin-bottom: 30px;
-        }
-
-        .user-info p {
-            font-size: 18px;
-            margin: 5px 0;
-        }
-
-        .coins {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        .actions {
-            margin-top: 20px;
-        }
-
-        .actions button {
-            margin: 5px;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        .actions button:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <title>Розетка | Главная</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <!-- Главная страница -->
-    <div class="header">
-        <h1>Добро пожаловать в шуточное казино!</h1>
-    </div>
-    <div class="content">
-        <h2>Введите ваш ник:</h2>
-        <input type="text" id="nickname" placeholder="Ваш ник">
-        <button onclick="enterCasino()">Перейти</button>
-    </div>
-
-    <script>
-        // Проверяем, был ли введен ник ранее и сохранен в localStorage
-        if (localStorage.getItem('nickname')) {
-            window.location.href = 'mainPage.html'; // Перенаправление на страницу главной после сохранения ника
-        }
-
-        // Функция для перехода на главную страницу после ввода ника
-        function enterCasino() {
-            const nickname = document.getElementById('nickname').value.trim();
-            
-            if (nickname) {
-                // Сохраняем ник в localStorage
-                localStorage.setItem('nickname', nickname);
-                
-                // Генерация уникального ID для пользователя
-                const userId = Math.floor(Math.random() * 90000000) + 10000000; // Генерация ID из 8 случайных цифр
-                
-                // Сохранение уникального ID в localStorage
-                localStorage.setItem('userId', userId);
-                
-                // Сохранение стартового количества монет
-                localStorage.setItem('coins', 1000);
-                
-                // Перенаправляем на главную страницу
-                window.location.href = 'mainPage.html';
-            } else {
-                alert('Пожалуйста, введите ваш ник!');
-            }
-        }
-    </script>
-
+    <header>
+        <h1>Розетка</h1>
+        <nav>
+            <a href="category.html?category=clothes">Одежда</a>
+            <a href="category.html?category=accessories">Аксессуары</a>
+            <a href="category.html?category=sneakers">Кроссовки</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Популярные товары</h2>
+        <div class="products">
+            <div class="product">
+                <img src="https://via.placeholder.com/150" alt="Футболка Nike">
+                <h3>Футболка Nike</h3>
+                <p>Цена: 1 500 грн</p>
+                <a href="product.html?id=1">Подробнее</a>
+            </div>
+            <div class="product">
+                <img src="https://via.placeholder.com/150" alt="Часы Apple Watch">
+                <h3>Часы Apple Watch</h3>
+                <p>Цена: 12 000 грн</p>
+                <a href="product.html?id=2">Подробнее</a>
+            </div>
+        </div>
+    </main>
 </body>
 </html>

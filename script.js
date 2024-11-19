@@ -1,56 +1,49 @@
-// Массивы данных для генерации
-const categories = {
-    clothes: ["Футболка", "Куртка", "Штаны", "Кепка"],
-    accessories: ["Часы", "Очки", "Сумка", "Кошелёк"],
-    sneakers: ["Кроссовки", "Ботинки", "Сандалии", "Тапочки"]
-};
+// Массивы данных для "Секонд-хенд"
+const secondhandItems = ["Футболка", "Куртка", "Штаны", "Кепка", "Часы", "Сумка", "Кроссовки", "Тапочки"];
 
-const brands = ["Nike", "Adidas", "Puma", "Gucci", "Chanel"];
-const qualities = ["Обычное", "Хорошее", "Элитное"];
-
-// Получаем категорию из URL
-const urlParams = new URLSearchParams(window.location.search);
-const selectedCategory = urlParams.get("category");
-const categoryTitle = document.getElementById("category-title");
-const productsContainer = document.getElementById("products");
-
-// Устанавливаем заголовок категории
-if (selectedCategory && categories[selectedCategory]) {
-    categoryTitle.textContent = `Категория: ${selectedCategory}`;
-} else {
-    categoryTitle.textContent = "Категория не найдена!";
-}
-
-// Функция для генерации случайного товара
-function generateProduct(category) {
-    const name = categories[category][Math.floor(Math.random() * categories[category].length)];
+// Функция для генерации товара для секонд-хенда
+function generateSecondhandProduct() {
+    const name = secondhandItems[Math.floor(Math.random() * secondhandItems.length)];
     const brand = brands[Math.floor(Math.random() * brands.length)];
-    const quality = qualities[Math.floor(Math.random() * qualities.length)];
-    const price = Math.floor(Math.random() * 10000) + 500;
+
+    // 80% товаров "Обычные", 20% — более дорогие
+    const isRare = Math.random() > 0.8;
+    const basePrice = isRare ? Math.floor(Math.random() * 4000) + 2000 : Math.floor(Math.random() * 1000) + 300;
+    const price = Math.floor(basePrice * 0.7); // Скидка 30%
 
     return `
         <div class="product">
             <img src="https://via.placeholder.com/150" alt="${name}">
             <h3>${name}</h3>
             <p>Бренд: ${brand}</p>
-            <p>Качество: ${quality}</p>
             <p>Цена: ${price} грн</p>
         </div>
     `;
 }
 
-// Генерация товаров для выбранной категории
+// Логика для генерации товаров в зависимости от категории
 if (selectedCategory && categories[selectedCategory]) {
     for (let i = 0; i < 20; i++) {
         productsContainer.innerHTML += generateProduct(selectedCategory);
+    }
+} else if (selectedCategory === "secondhand") {
+    categoryTitle.textContent = "Категория: Секонд-хенд";
+    for (let i = 0; i < 20; i++) {
+        productsContainer.innerHTML += generateSecondhandProduct();
     }
 }
 
 // Бесконечная прокрутка (ленивая загрузка)
 window.addEventListener("scroll", () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        for (let i = 0; i < 10; i++) {
-            productsContainer.innerHTML += generateProduct(selectedCategory);
+        if (selectedCategory && categories[selectedCategory]) {
+            for (let i = 0; i < 10; i++) {
+                productsContainer.innerHTML += generateProduct(selectedCategory);
+            }
+        } else if (selectedCategory === "secondhand") {
+            for (let i = 0; i < 10; i++) {
+                productsContainer.innerHTML += generateSecondhandProduct();
+            }
         }
     }
 });

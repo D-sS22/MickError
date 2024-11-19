@@ -1,66 +1,30 @@
-/* Общий стиль страницы */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f8f9fa;
-    color: #212529;
-}
-
-header {
-    background-color: #343a40;
-    color: white;
-    padding: 10px 0;
-    text-align: center;
-}
-
-h1 {
-    margin: 0;
-    font-size: 24px;
-}
-
-nav {
-    margin: 10px 0;
-}
-
-nav a {
-    text-decoration: none;
-    color: white;
-    background-color: #007BFF;
-    padding: 10px 15px;
-    border-radius: 5px;
-    margin-right: 10px;
-    font-size: 16px;
-}
-
-nav a:hover {
-    background-color: #0056b3;
-}
-
-main {
-    text-align: center;
+.items-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
     padding: 20px;
 }
 
-.big-button {
-    display: inline-block;
-    background-color: #28a745;
-    color: white;
-    padding: 15px 25px;
-    font-size: 18px;
+.item {
+    background-color: #fff;
+    border: 1px solid #ddd;
     border-radius: 5px;
-    text-decoration: none;
-    margin-top: 20px;
-}
-
-.big-button:hover {
-    background-color: #218838;
-}
-
-footer {
+    padding: 15px;
+    width: 200px;
     text-align: center;
-    background-color: #343a40;
-    color: white;
-    padding: 10px 0;
-    margin-top: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
+.item h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+.item p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+}
+

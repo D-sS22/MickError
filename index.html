@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Онлайн-чат</title>
+    <title>Мини-чат</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,37 +12,46 @@
             flex-direction: column;
             height: 100vh;
         }
-        #chat {
+        #friends, #chat {
             flex: 1;
             overflow-y: auto;
             padding: 10px;
             border: 1px solid #ccc;
         }
-        #chat div {
-            margin-bottom: 10px;
-        }
-        #input-container {
+        #input-container, #friend-add-container {
             display: flex;
+            padding: 10px;
         }
-        #message-input {
+        #message-input, #friend-id-input {
             flex: 1;
             padding: 10px;
             border: 1px solid #ccc;
         }
-        #send-button {
-            width: 80px;
+        #send-button, #add-friend-button {
             padding: 10px;
             background-color: #28a745;
             color: white;
             border: none;
             cursor: pointer;
         }
-        #send-button:hover {
+        #send-button:hover, #add-friend-button:hover {
             background-color: #218838;
+        }
+        #user-id {
+            padding: 10px;
+            text-align: center;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ccc;
         }
     </style>
 </head>
 <body>
+    <div id="user-id">Ваш ID: <span id="current-id"></span></div>
+    <div id="friends"></div>
+    <div id="friend-add-container">
+        <input type="text" id="friend-id-input" placeholder="Введите ID друга...">
+        <button id="add-friend-button">Добавить</button>
+    </div>
     <div id="chat"></div>
     <div id="input-container">
         <input type="text" id="message-input" placeholder="Введите сообщение...">
@@ -52,7 +61,6 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js"></script>
-
     <script>
         // Firebase Configuration
         const firebaseConfig = {
@@ -69,39 +77,79 @@
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // Generate Unique ID for User
+        let currentUserId = localStorage.getItem('userId') || Math.random().toString(36).substring(2, 10);
+        localStorage.setItem('userId', currentUserId);
+
+        document.getElementById('current-id').textContent = currentUserId;
+
         // DOM Elements
-        const chat = document.getElementById('chat');
+        const friendsDiv = document.getElementById('friends');
+        const chatDiv = document.getElementById('chat');
+        const friendIdInput = document.getElementById('friend-id-input');
+        const addFriendButton = document.getElementById('add-friend-button');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
 
-        // Send Message
-        sendButton.addEventListener('click', () => {
-            const message = messageInput.value.trim();
-            if (message) {
-                const messageData = {
-                    text: message,
-                    timestamp: Date.now()
-                };
-                db.ref('messages').push(messageData);
-                messageInput.value = '';
+        // Add Friend
+        addFriendButton.addEventListener('click', () => {
+            const friendId = friendIdInput.value.trim();
+            if (friendId && friendId !== currentUserId) {
+                const friendRequest = { sender: currentUserId };
+                db.ref(`friendRequests/${friendId}`).push(friendRequest);
+                alert('Запрос в друзья отправлен!');
+                friendIdInput.value = '';
             }
         });
 
-        // Listen for New Messages
-        db.ref('messages').on('child_added', (snapshot) => {
-            const message = snapshot.val();
-            const messageDiv = document.createElement('div');
-            messageDiv.textContent = message.text;
-            chat.appendChild(messageDiv);
-            chat.scrollTop = chat.scrollHeight; // Scroll to bottom
-            playNotificationSound();
+        // Accept Friend Request
+        db.ref(`friendRequests/${currentUserId}`).on('child_added', (snapshot) => {
+            const request = snapshot.val();
+            if (confirm(`Пользователь с ID ${request.sender} хочет добавить вас в друзья. Принять?`)) {
+                // Add both users to each other's friend lists
+                db.ref(`friends/${currentUserId}/${request.sender}`).set(true);
+                db.ref(`friends/${request.sender}/${currentUserId}`).set(true);
+                alert('Вы добавлены в друзья!');
+            }
+            snapshot.ref.remove();
         });
 
-        // Play Notification Sound
-        function playNotificationSound() {
-            const audio = new Audio('https://www.soundjay.com/button/beep-07.wav');
-            audio.play();
+        // Load Friends
+        db.ref(`friends/${currentUserId}`).on('value', (snapshot) => {
+            const friends = snapshot.val() || {};
+            friendsDiv.innerHTML = '<h3>Друзья:</h3>';
+            Object.keys(friends).forEach(friendId => {
+                const friendDiv = document.createElement('div');
+                friendDiv.textContent = `Друг: ${friendId}`;
+                friendDiv.addEventListener('click', () => loadChat(friendId));
+                friendsDiv.appendChild(friendDiv);
+            });
+        });
+
+        // Load Chat
+        let currentChatId = null;
+        function loadChat(friendId) {
+            currentChatId = friendId;
+            chatDiv.innerHTML = `<h3>Чат с ${friendId}:</h3>`;
+            db.ref(`messages/${currentUserId}/${friendId}`).on('child_added', (snapshot) => {
+                const message = snapshot.val();
+                const messageDiv = document.createElement('div');
+                messageDiv.textContent = message.text;
+                chatDiv.appendChild(messageDiv);
+                chatDiv.scrollTop = chatDiv.scrollHeight;
+            });
         }
+
+        // Send Message
+        sendButton.addEventListener('click', () => {
+            const messageText = messageInput.value.trim();
+            if (messageText && currentChatId) {
+                const message = { text: messageText, sender: currentUserId };
+                db.ref(`messages/${currentUserId}/${currentChatId}`).push(message);
+                db.ref(`messages/${currentChatId}/${currentUserId}`).push(message);
+                messageInput.value = '';
+            }
+        });
     </script>
 </body>
 </html>

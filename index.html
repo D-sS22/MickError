@@ -1,28 +1,107 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Розетка | Главная</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Онлайн-чат</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        #chat {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        #chat div {
+            margin-bottom: 10px;
+        }
+        #input-container {
+            display: flex;
+        }
+        #message-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        #send-button {
+            width: 80px;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #send-button:hover {
+            background-color: #218838;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Розетка</h1>
-        <nav>
-            <a href="category.html?category=clothes">Одежда</a>
-            <a href="category.html?category=accessories">Аксессуары</a>
-            <a href="category.html?category=sneakers">Кроссовки</a>
-            <a href="category.html?category=secondhand">Секонд-хенд</a>
-        </nav>
-    </header>
-    <main>
-        <h2>Выберите категорию</h2>
-        <p>Добро пожаловать в наш онлайн-магазин "Розетка"! Здесь вы найдете одежду, аксессуары, обувь, а также уникальные товары из секонд-хенда по сниженным ценам.</p>
-        <a href="category.html?category=secondhand" class="big-button">Перейти в Секонд-хенд</a>
-    </main>
-    <footer>
-        <p>&copy; 2024 Розетка. Все права защищены.</p>
-    </footer>
+    <div id="chat"></div>
+    <div id="input-container">
+        <input type="text" id="message-input" placeholder="Введите сообщение...">
+        <button id="send-button">Отправить</button>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "ТВОЙ_API_KEY",
+            authDomain: "ТВОЙ_AUTH_DOMAIN",
+            databaseURL: "ТВОЙ_DATABASE_URL",
+            projectId: "ТВОЙ_PROJECT_ID",
+            storageBucket: "ТВОЙ_STORAGE_BUCKET",
+            messagingSenderId: "ТВОЙ_MESSAGING_SENDER_ID",
+            appId: "ТВОЙ_APP_ID"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // DOM Elements
+        const chat = document.getElementById('chat');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+
+        // Send Message
+        sendButton.addEventListener('click', () => {
+            const message = messageInput.value.trim();
+            if (message) {
+                const messageData = {
+                    text: message,
+                    timestamp: Date.now()
+                };
+                db.ref('messages').push(messageData);
+                messageInput.value = '';
+            }
+        });
+
+        // Listen for New Messages
+        db.ref('messages').on('child_added', (snapshot) => {
+            const message = snapshot.val();
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = message.text;
+            chat.appendChild(messageDiv);
+            chat.scrollTop = chat.scrollHeight; // Scroll to bottom
+            playNotificationSound();
+        });
+
+        // Play Notification Sound
+        function playNotificationSound() {
+            const audio = new Audio('https://www.soundjay.com/button/beep-07.wav');
+            audio.play();
+        }
+    </script>
 </body>
 </html>
